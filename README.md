@@ -39,6 +39,15 @@ python -m pip install -r requirements.txt
 sudo apt install libportaudio2 portaudio19-dev espeak-ng
 ```
 
+В NixOS можно создать локальные ссылки на эти пакеты так:
+
+```bash
+nix build --out-link .tools/portaudio nixpkgs#portaudio
+nix build --out-link .tools/espeak-ng nixpkgs#espeak-ng
+```
+
+`run.sh` добавляет библиотеки из этих каталогов в окружение запуска.
+
 Для озвучивания установите или включите русский системный голос. В Linux с eSpeak NG обычно доступен голос `ru`; в macOS и Windows доступность голоса зависит от установленных системных голосов. Если русский голос не найден, Хелпер использует голос системы по умолчанию.
 
 ### 3. Соберите Whisper.cpp и подготовьте модель
@@ -46,31 +55,33 @@ sudo apt install libportaudio2 portaudio19-dev espeak-ng
 Сборка из официального репозитория Whisper.cpp:
 
 ```bash
-git clone https://github.com/ggml-org/whisper.cpp.git
-cd whisper.cpp
+mkdir -p .tools
+git clone --depth 1 https://github.com/ggml-org/whisper.cpp.git .tools/whisper.cpp
+cd .tools/whisper.cpp
 cmake -B build
 cmake --build build --config Release -j
 sh ./models/download-ggml-model.sh base
+cd ../..
 ```
 
 Модель `base` мультиязычная и подходит для русского. Скачать модель нужно один раз во время установки; при обычной работе Хелпер использует локальный файл.
 
 ## Запуск
 
-Из корня этого репозитория активируйте виртуальное окружение, задайте пути к Whisper.cpp и модели, затем запустите приложение:
+После установки запустите из корня репозитория:
 
 ```bash
-export WHISPER_CPP_PATH="$HOME/whisper.cpp/build/bin/whisper-cli"
-export WHISPER_MODEL_PATH="$HOME/whisper.cpp/models/ggml-base.bin"
-python main.py
+./run.sh
 ```
+
+Скрипт использует `.venv` и автоматически выбирает исполняемый файл и модель из `.tools/whisper.cpp`. При необходимости эти пути можно переопределить переменными окружения.
 
 В PowerShell используйте:
 
 ```powershell
 $env:WHISPER_CPP_PATH = "$HOME\whisper.cpp\build\bin\Release\whisper-cli.exe"
 $env:WHISPER_MODEL_PATH = "$HOME\whisper.cpp\models\ggml-base.bin"
-python main.py
+.venv\Scripts\python main.py
 ```
 
 Нажмите Enter в приглашении `Ты:`, чтобы начать запись, и нажмите Enter ещё раз, чтобы остановить её. Текст можно также ввести с клавиатуры. Для завершения введите `exit`, `quit` или `выход`.

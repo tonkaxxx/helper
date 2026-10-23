@@ -168,7 +168,11 @@ def create_speech_engine() -> Any:
                 [str(getattr(voice, "id", "")), str(getattr(voice, "name", ""))]
                 + locale_values
             ).lower()
-            if "russian" in voice_description or "ru-ru" in voice_description or "ru_" in voice_description:
+            russian_locale = any(
+                language.strip("\x05").split("-", 1)[0].split("_", 1)[0] == "ru"
+                for language in locale_values
+            )
+            if russian_locale or "russian" in voice_description:
                 engine.setProperty("voice", voice.id)
                 break
         return engine

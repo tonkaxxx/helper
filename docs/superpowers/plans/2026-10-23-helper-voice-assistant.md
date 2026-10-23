@@ -30,8 +30,10 @@
 ## File Structure
 
 - Modify `main.py`: configuration, microphone capture, local transcription, TTS, and assistant loop.
-- Create `requirements.txt`: Python runtime dependencies for microphone capture and offline speech.
-- Create `README.md`: platform-neutral setup, local Whisper model/build setup, environment variables, and usage.
+- Modify `.gitignore`: exclude the local virtual environment, configuration, and installed Whisper tools.
+- Create `requirements.txt`: Python runtime dependencies, including NumPy for sounddevice microphone streams.
+- Create `run.sh`: set project-local Whisper and Nix library paths, then launch the virtual environment.
+- Create `README.md`: setup, local Whisper model/build setup, environment variables, and usage.
 
 ## Task 1: Implement the local voice loop
 
@@ -51,6 +53,7 @@
 
 - [ ] Add the declared Python dependencies to `requirements.txt`.
 - [ ] Implement the functions and CLI flow in `main.py` with clear startup checks and actionable microphone, Whisper, TTS, and Ollama errors.
-- [ ] Document installation of Python dependencies, `whisper-cli`, and a Russian-capable local Whisper model, then document default and environment-based configuration in `README.md`.
+- [ ] Add a launcher for project-local Whisper assets and document installation of Python dependencies, native audio libraries, `whisper-cli`, and a Russian-capable local Whisper model.
+- [ ] Document default and environment-based configuration in `README.md`.
 - [ ] Verify Python syntax with `python -m py_compile main.py` and review `git diff --check` when Git metadata is writable.
 - [ ] Commit the feature as `feat: add local voice interaction to Helper` when Git metadata is writable.
